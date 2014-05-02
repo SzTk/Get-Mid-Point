@@ -4,6 +4,9 @@
 #http://www.geomidpoint.com/calculation.html
 from math import (pi, sin, cos, atan2, sqrt)
 from get_mid_point import (pygmapslib, directions, geocoding)
+from StringIO import StringIO
+import sys
+
 
 def get_middle_point(coordinates):
     x = 0
@@ -26,14 +29,16 @@ middle_point = geocoding.request(str(middle_cord['lat']) + ',' + str(middle_cord
 
 results = directions.request(origin='Tokyo', destination=str(middle_point.data[0]['geometry']['location']['lat']) + ',' + str(middle_point.data[0]['geometry']['location']['lng']))
 
+output = StringIO()
 for route in results.data:
-    print(u'ルートサマリ: ' + route['summary'])
+    output.write(u'ルートサマリ: ' + route['summary'])
     for leg in route['legs']:
-        print(u'出発地点: ' + leg['start_address'])
-        print(u'到着地点: ' + leg['end_address'])
-        print(u'距離: ' + leg['distance']['text'])
-        print(u'所要時間: ' + leg['duration']['text'])
+        output.write(u'出発地点: ' + leg['start_address'])
+        output.write(u'到着地点: ' + leg['end_address'])
+        output.write(u'距離: ' + leg['distance']['text'])
+        output.write(u'所要時間: ' + leg['duration']['text'])
         for step in leg['steps']:
-            print(step['html_instructions'])
+            output.write(step['html_instructions'])
+print output.getvalue().encode(sys.getfilesystemencoding())
 
 
