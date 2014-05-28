@@ -24,4 +24,4 @@ point3 = geocoding.request('中野島駅')
 middle_cord = get_middle_point([point1.data[0]['geometry']['location'], point2.data[0]['geometry']['location'], point3.data[0]['geometry']['location']])
 stations = placesearch.get_nearest_station(middle_cord, key='AIzaSyD9W-6YNcXzEd3EJDiYmx3qBj8qWrD2F1I')
 
-print stations
+print stations.data
