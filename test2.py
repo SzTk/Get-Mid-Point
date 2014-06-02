@@ -26,3 +26,4 @@ stations = placesearch.get_nearest_station(middle_cord, key='XXXXXXXXXXXXXXXXXXX
 
 print stations
 
+

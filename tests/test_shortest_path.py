@@ -9,7 +9,7 @@ def test_shortest_path():
     sp = shortest_path.ShortestPath(STATION_FILE,
                                     LINE_FILE,
                                     JOIN_FILE)
-    print sp.shotest_path_name('青森', '東京')
+    print sp.shortest_path_name('青森', '東京')
     assert True
 
 if __name__ == '__main__':

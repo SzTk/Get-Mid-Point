@@ -16,7 +16,7 @@ class ShortestPath(object):
         self.join_df = pd.read_csv(join_file)
         self.rail_net = self._make_rail_net()
 
-    def shotest_path_name(self, from_station_name, to_station_name):
+    def shortest_path_name(self, from_station_name, to_station_name):
         '''
         return shortest path in station_name.
         '''
@@ -40,6 +40,48 @@ class ShortestPath(object):
                 to_station_g_cd)
         return shortest_path
 
+    def shortest_path_with_locations(self, from_station_location,
+                                     to_station_location):
+        '''
+        Return shortest path with two station locations.
+        '''
+        from_station_g_cd = self._station_location_gcd(from_station_location)
+        to_station_g_cd = self._station_location_gcd(to_station_location)
+        shortest_path =\
+            nx.dijkstra_path(
+                self.rail_net,
+                from_station_g_cd,
+                to_station_g_cd)
+        return shortest_path
+
+    def shortest_path_length(self, from_station_name, to_station_name):
+        '''
+        Return shortest path length.
+        '''
+        from_station_g_cd = self._station_name_gcd(from_station_name)
+        to_station_g_cd = self._station_name_gcd(to_station_name)
+        shortest_path_length =\
+            nx.dijkstra_path_length(
+                self.rail_net,
+                from_station_g_cd,
+                to_station_g_cd)
+        return shortest_path_length
+
+    def shortest_path_length_with_locations(self,
+                                            from_station_location,
+                                            to_station_location):
+        '''
+        Return shortest path length with two locations of station.
+        '''
+        from_station_g_cd = self._station_location_gcd(from_station_location)
+        to_station_g_cd = self._station_location_gcd(to_station_location)
+        shortest_path_length =\
+            nx.dijkstra_path_length(
+                self.rail_net,
+                from_station_g_cd,
+                to_station_g_cd)
+        return shortest_path_length
+
     def _station_name_gcd(self, station_name):
         '''
         Return gcd of station_name.
@@ -56,6 +98,32 @@ class ShortestPath(object):
             raise ValueError(
                 'there is no candidate statioon_name:{}'
                 .format(station_name))
+        return int(station_gcds)
+
+    def _station_location_gcd(self, station_location):
+        '''
+        Return gcd of station_location.
+        if station can't be identified, Raising Error.
+        '''
+        error = 0.002
+        station_gcds =\
+            self.station_df[
+                abs(self.station_df['lat']
+                    -
+                    float(station_location['lat'])) < error
+            ][
+                abs(self.station_df['lon']
+                    -
+                    float(station_location['lng'])) < error
+            ]['station_g_cd'].unique()
+        if len(station_gcds) > 1:
+            raise ValueError('there is more than one candidate of'
+                             + 'station_location:{}'
+                             .format(station_location))
+        elif len(station_gcds) == 0:
+            raise ValueError('there is no candidate of'
+                             + 'station_location:{}'
+                             .format(station_location))
         return int(station_gcds)
 
     def _make_rail_net(self):
